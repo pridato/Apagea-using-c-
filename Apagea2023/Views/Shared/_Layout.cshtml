@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using System.Text.Json
+@{
+    
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -10,25 +15,29 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Agapea_netcore_mvc_23_24</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+        <div class="container">
+            <div class="row">
+                <div class="col-9"></div>
+                <div class="col-3">
+                    <div class="btn-group btn-sm">
+                        <a href="#" class="btn btn-dark">Contacto</a>
+                        <! -- boton de login siempre y cuando no exista estado de sesion
+                              si existe de sesion entonces boton con el mail para acceder al panel del cliente
+                        -->
+                        @if (Context.Session.GetString("datoscliente") != null)
+                         {
+                            Cliente clientelogged = JsonSerializer.Deserialize<Cliente>(Context.Session.GetString("datoscliente"));
+                            <a asp-controller="cliente" asp-action="MiPanel" class="btn btn-dark btn-sm">@clientelogged.Credenciales.Email</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Cliente" asp-action="Login" class="btn btn-dark btn-sm">Login</a>
+                        }
+                        <a href="#" class="btn btn-primary">Link</a>
+                    </div>
                 </div>
             </div>
-        </nav>
+        </div>
     </header>
     <div class="container">
         <main role="main" class="pb-3">

@@ -9,6 +9,13 @@ builder.Services.AddScoped<IDBAccess, SqlServerDBAccess>();
 // Servicio mailJet
 builder.Services.AddScoped<IClienteCorreo, MailJetServices>();
 
+//acceso a la sesion
+builder.Services.AddSession((SessionOptions opciones) =>
+{
+    opciones.Cookie.HttpOnly = true; // inhabilita acceso a través de javascript a las cookies,evitando por consiguiente su modif.
+    opciones.Cookie.MaxAge = new TimeSpan(1, 0, 0); // a este tiempo se elimina toda la sesion 
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -27,6 +34,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession(); // <-- 4º middleware para extraer la cabecera de la peticion http-request la cookie con el idsession para el user 
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -11,8 +11,8 @@ namespace Apagea2023.Models.Servicios
         {
             this.__accesoAppSettings = servicioAccesoAppSettingsDI;
 
-            this.UserId = this.__accesoAppSettings.GetSection("MailJetCredentials:ClaveAPI").Value;
-            this.Key = this.__accesoAppSettings.GetSection("MailJetCredentials:ClaveSecreta").Value;
+            this.UserId = this.__accesoAppSettings.GetSection("MailJetCredentials:ClaveApi").Value;
+            this.Key = this.__accesoAppSettings.GetSection("MailJetCredentials:ClaveSectreta").Value;
         }
         #endregion ...
 
@@ -40,7 +40,7 @@ namespace Apagea2023.Models.Servicios
                 };
 
                 //2º: crear el cuerpo del mensaje de correo a mandar al cliente.. <=== clase MailMessage
-                MailMessage _mensajeAEnviar = new("pmr.aiki@gmail.com", emailcliente)
+                MailMessage _mensajeAEnviar = new("davidarroyo25052004@gmail.com", emailcliente)
                 {
                     Subject = subject,
                     IsBodyHtml = true, //si quieres incrustar en el body del tags html como links, imagenes,....

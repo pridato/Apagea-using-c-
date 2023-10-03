@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Runtime.CompilerServices;
 
+using System.Text.Json;
+
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Apagea2023.Controllers
@@ -74,6 +76,7 @@ namespace Apagea2023.Controllers
 
             if (ModelState.IsValid)
             {
+                datoscliente.Credenciales.CuentaActiva = true;
                 //1º insertar los datos en la bd
                 bool _resultadoInsert = this.__servicioDB.RegistrarCliente(datoscliente);
                 if (_resultadoInsert)
@@ -96,7 +99,7 @@ namespace Apagea2023.Controllers
                 {
                     //mostrar en vista mensaje de error: "Ha habido un fallo interno, intentelo de nuevo mas tarde..."
                     //mostrar vista de Registro.cshtml con ese error
-                    return View(datoscliente);
+                    return View("Registro");
                 }
             }
             else
@@ -157,6 +160,8 @@ namespace Apagea2023.Controllers
                 else
                 {
                     //3º si ok, CREO VARIABLE DE ESTADO con los datos del objeto cliente logueado (pedidos, direcciones, opiniones,...)
+                    HttpContext.Session.SetString("datoscliente", JsonSerializer.Serialize<Cliente>(_datosCliente));
+                    
                     return RedirectToAction("Libros", "Tienda");
 
                 }

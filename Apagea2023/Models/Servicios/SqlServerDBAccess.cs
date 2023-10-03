@@ -11,9 +11,6 @@ namespace Apagea2023.Models.Servicios
         public SqlServerDBAccess(IConfiguration servicioAccesoAppSettingsDI)
         {
             this.__accesoAppSettings = servicioAccesoAppSettingsDI;
-            this.__cadenaConexionServer = this.__accesoAppSettings
-                                               .GetSection("ConnectionStrings:SqlServerConnectionString")
-                                               .Value;
         }
 
         #endregion
@@ -88,17 +85,23 @@ namespace Apagea2023.Models.Servicios
 
         public bool RegistrarCliente(Cliente datoscliente)
         {
-            SqlConnection _conexionBD = new (this.__cadenaConexionServer);
+            SqlConnection _conexionBD = null;
             try
             {
+                this.__cadenaConexionServer = this.__accesoAppSettings
+                    .GetSection("ConnectionStrings:SqlServerConnection")
+                    .Value;
                 //1º paso: abrir la conexion a la bd en el servidor sql-server usando cadena conexion
+                _conexionBD = new SqlConnection(this.__cadenaConexionServer);
                 _conexionBD.Open();
 
                 //2º paso: definir el INSERT y ejecutarlo en tabla Clientes de la bd Agapea2024
                 SqlCommand _insertClientes = new()
                 {
                     Connection = _conexionBD,
-                    CommandText = "INSERT INTO dbo.Clientes VALUES(@id,@nom,@ape,@tlfno,@email,@paswd,@log,@act,@img)",
+                    CommandText = "INSERT INTO dbo.Clientes (" +
+                                   "IdCliente, Nombre, Apellidos, Telefono, Email, PasswordHash, Login, CuentaActiva, ImagenCuentaBASE64)\n" +
+                                   "VALUES (@id, @nom, @ape, @tlfno, @email, @paswd, @log, @act, @img)\n",
                 };
                 _insertClientes.Parameters.AddWithValue("@id", datoscliente.IdCliente);
                 _insertClientes.Parameters.AddWithValue("@nom", datoscliente.Nombre);
@@ -127,7 +130,7 @@ namespace Apagea2023.Models.Servicios
             }
             finally
             {
-                _conexionBD.Close();
+                _conexionBD?.Close();
             }
 
         }
