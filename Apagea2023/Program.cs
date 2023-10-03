@@ -1,4 +1,13 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Apagea2023.Models.Servicios;
+using Apagea2023.Models.Servicios.Interfaces;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Servicio sqlServer
+builder.Services.AddScoped<IDBAccess, SqlServerDBAccess>();
+
+// Servicio mailJet
+builder.Services.AddScoped<IClienteCorreo, MailJetServices>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -22,7 +31,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Cliente}/{action=Login}/{id?}");
 
 app.Run();
 

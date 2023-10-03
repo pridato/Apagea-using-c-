@@ -6,4 +6,17 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+    <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Models\Servicios\" />
+    <None Remove="Models\Servicios\Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\Servicios\" />
+    <Folder Include="Models\Servicios\Interfaces\" />
+  </ItemGroup>
 </Project>

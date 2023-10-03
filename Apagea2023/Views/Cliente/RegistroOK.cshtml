@@ -1,0 +1,33 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Agapea_netcore_mvc_23_24</title>
+    <!--
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    -->
+    <!-- bootstrap CDNS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Agapea_netcore_mvc_23_24.styles.css" asp-append-version="true" />
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3><strong>Registro realizado correctamente</strong> en <img src="~/images/agapea-logo.svg" width="186px" height="40px" /></h3>
+            <p>Para completar el proceso acceda al enlace incluido en el EMAIL que el acabamos de enviar.</p>
+            <p>Si no lo recibe, compruebe en su carpeta de SPAM o Correo no deseado.</p>
+        </div>
+    </div>
+    <button class="btn btn-primary btn-lg" asp-controller="Tienda" asp-action="Libros">VOLVER A LA TIENDA</button>
+</div>
+</body>
+</html>
