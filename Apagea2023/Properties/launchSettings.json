@@ -11,7 +11,7 @@
     "Apagea2023": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:55093",
+      "applicationUrl": "http://localhost:43354",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

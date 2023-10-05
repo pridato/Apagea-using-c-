@@ -14,9 +14,14 @@
   <ItemGroup>
     <None Remove="Models\Servicios\" />
     <None Remove="Models\Servicios\Interfaces\" />
+    <None Remove="Views\Tienda\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Servicios\" />
     <Folder Include="Models\Servicios\Interfaces\" />
+    <Folder Include="Views\Tienda\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="json\categorias.json" />
   </ItemGroup>
 </Project>

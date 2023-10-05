@@ -1,16 +1,20 @@
 ﻿using System.Data.SqlClient;
 using BCrypt.Net;
 using Apagea2023.Models.Servicios.Interfaces;
+using System.Data;
 
 namespace Apagea2023.Models.Servicios
 {
-	public class SqlServerDBAccess : IDBAccess
+    public class SqlServerDBAccess : IDBAccess
     {
         #region ... constructor modelo servicio SQL Server ...
 
         public SqlServerDBAccess(IConfiguration servicioAccesoAppSettingsDI)
         {
             this.__accesoAppSettings = servicioAccesoAppSettingsDI;
+            this.__cadenaConexionServer = this.__accesoAppSettings
+                                               .GetSection("ConnectionStrings:SqlServerConnection")
+                                               .Value;
         }
 
         #endregion
@@ -26,7 +30,7 @@ namespace Apagea2023.Models.Servicios
 
         #region ... metodos Cliente Controller ...
 
-        public Cliente? LoginCliente(string email, string password)
+        public Cliente LoginCliente(string email, string password)
         {
             try
             {
@@ -36,7 +40,7 @@ namespace Apagea2023.Models.Servicios
                 _conexionBD.Open();
 
                 //1º recupero datos sobre tabla Clientes....
-                SqlCommand _selectCliente = new ("SELECT * FROM dbo.Clientes WHERE Email=@em", _conexionBD);
+                SqlCommand _selectCliente = new("SELECT * FROM dbo.Clientes WHERE Email=@em", _conexionBD);
                 _selectCliente.Parameters.AddWithValue("@em", email);
 
                 SqlDataReader _cursor = _selectCliente.ExecuteReader();
@@ -46,7 +50,7 @@ namespace Apagea2023.Models.Servicios
                     while (_cursor.Read())
                     {
                         //compruebo si los hashes coinciden...
-                        if (BCrypt.Net.BCrypt.Verify(password, _cursor["Password"].ToString()))
+                        if (BCrypt.Net.BCrypt.Verify(password, _cursor["PasswordHash"].ToString()))
                         {
                             _clientaADevolver.IdCliente = _cursor["IdCliente"].ToString() ?? "sin IdCliente";
                             _clientaADevolver.Nombre = _cursor["Nombre"].ToString() ?? "sin nombre";
@@ -139,16 +143,16 @@ namespace Apagea2023.Models.Servicios
         {
             try
             {
-                using SqlConnection _conexionBD = new (this.__cadenaConexionServer);
+                using SqlConnection _conexionBD = new(this.__cadenaConexionServer);
                 _conexionBD.Open();
 
-                SqlCommand _updateCliente = new ("UPDATE dbo.Clientes SET CuentaActiva=1 WHERE IdCliente=@id", _conexionBD);
+                SqlCommand _updateCliente = new("UPDATE dbo.Clientes SET CuentaActiva=1 WHERE IdCliente=@id", _conexionBD);
                 _updateCliente.Parameters.AddWithValue("@id", idCliente);
 
                 int _resultadoUpdate = _updateCliente.ExecuteNonQuery();
                 return _resultadoUpdate == 1;
             }
-            catch (Exception )
+            catch (Exception)
             {
                 return false;
             }
@@ -156,6 +160,104 @@ namespace Apagea2023.Models.Servicios
 
         #endregion
 
+
+        #region ... metodos Tienda controller ...
+
+        public List<Categoria> RecuperaCategorias(string idCategorias)
+        {
+            // si en parametro idCategoria viene valor "raiz" <----- invocado desde _layout para el panel lateral
+            // sino vendra un idCategoria del que quiero saber sus subcategorias: ej 2-10 informatica <- subcats. Bd.Programacion
+            if (idCategorias.Equals("root"))
+            {
+                try
+                {
+                    using SqlConnection _conexionBD = new(this.__cadenaConexionServer);
+                    _conexionBD.Open();
+
+                    SqlCommand _selectCategorias = new("Select * From dbo.Categorias", _conexionBD);
+
+                    return _selectCategorias.ExecuteReader()
+                                            .Cast<IDataRecord>()
+                                            .Select((IDataRecord fila) => new Categoria
+                                            {
+                                                IdCategoria = fila["IdCategoria"].ToString() ?? "",
+                                                NombreCategoria = fila["NombreCategoria"].ToString() ?? "",
+                                            })
+                                            .ToList<Categoria>();
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+
+            return null;
+
+        }
+
+        public List<Libro>? RecuperarLibros(string idcategoria)
+        {
+
+            try
+            {
+                using SqlConnection _conexionBD = new SqlConnection(this.__cadenaConexionServer);
+                _conexionBD.Open();
+                SqlCommand _selectLibros = new SqlCommand("Select * From dbo.Libros WHERE IdCategoria LIKE @idcat + '%'", _conexionBD);
+                _selectLibros.Parameters.AddWithValue("@idcat", idcategoria.ToString());
+
+                /* todo esto forma original 
+                if (_resSelect.HasRows)
+                {
+                    List<Libro> _listaADevolver = new List<Libro>();
+                    while (_resSelect.Read())
+                    {
+                        Libro _libro = new();
+                        _libro.IdCategoria = _resSelect["IdCategoria"].ToString() ?? "";
+                        _libro.Titulo = _resSelect["Titulo"].ToString() ?? "";
+                        _libro.Autores = _resSelect["Autores"].ToString() ?? "";
+                        _libro.ISBN10 = _resSelect["ISBN10"].ToString() ?? "";
+                        _libro.ISBN13 = _resSelect["ISBN13"].ToString() ?? "";
+                        _libro.Edicion = _resSelect["Edicion"].ToString() ?? "";
+                        _libro.Dimensiones = _resSelect["Dimensiones"].ToString() ?? "";
+                        _libro.ImagenLibroBASE64 = _resSelect["ImagenLibroBASE64"].ToString() ?? "";
+                        _libro.Idioma = _resSelect["Idioma"].ToString() ?? "";
+                        _libro.Resumen = _resSelect["Resumen"].ToString() ?? "";
+                        _libro.NumeroPaginas = System.Convert.ToInt32(_resSelect["NumeroPaginas"].ToString() ?? "");
+                        _libro.Precio = System.Convert.ToInt32(_resSelect["IdCategoria"].ToString() ?? "");
+
+                        _listaADevolver.Add(_libro);
+                    }
+                    return _listaADevolver;
+                else {
+                ... } exception...
+                */
+                return _selectLibros.ExecuteReader()
+                             .Cast<IDataRecord>()
+                             .Select((IDataRecord fila) => new Libro
+                             {
+                                 IdCategoria = fila["IdCategoria"].ToString() ?? "",
+                                 Titulo = fila["Titulo"].ToString() ?? "",
+                                 Autores = fila["Autores"].ToString() ?? "",
+                                 ISBN10 = fila["ISBN10"].ToString() ?? "",
+                                 ISBN13 = fila["ISBN13"].ToString() ?? "",
+                                 Edicion = fila["Edicion"].ToString() ?? "",
+                                 Dimensiones = fila["Dimensiones"].ToString() ?? "",
+                                 ImagenLibroBASE64 = fila["ImagenLibroBASE64"].ToString() ?? "",
+                                 Idioma = fila["Idioma"].ToString() ?? "",
+                                 Resumen = fila["Resumen"].ToString() ?? "",
+                                 NumeroPaginas = System.Convert.ToInt32(fila["NumeroPaginas"].ToString() ?? ""),
+                                 Precio = System.Convert.ToDecimal(fila["Precio"].ToString() ?? ""),
+                             })
+                             .ToList<Libro>();
+                
+            }
+            catch (Exception)
+            {
+                return null;
+            } 
+        }
+
+        #endregion
         #endregion
     }
 }

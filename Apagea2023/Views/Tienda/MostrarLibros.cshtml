@@ -1,0 +1,60 @@
+﻿@model List<Libro>
+
+<div class="container">
+    @if (Model.Count != 0)
+    {
+        <div class="row">
+            @foreach (Libro item in Model)
+            {
+                <div class="col-4">
+                    <div class="container">
+                        <div class="row">
+
+                            <!-- columna para imagen del libro y boton comprar -->
+
+                            <div class="col-4">
+                                <div style="height:157px; height:106px">
+                                    <a asp-controller="Tienda"
+                                       asp-action="MostrarDetallesLibro"
+                                       asp-all-route-data="@(new Dictionary<string, string> { {"id", item.ISBN13 } })">
+                                        <img class="img-fluid" src="@item.ImagenLibroBASE64" alt="..." />
+                                    </a>
+                                </div>
+                                <a asp-controller="Pedido"
+                                   asp-action="AddLibroPedido"
+                                   asp-all-route-data="@(new Dictionary<string, string> { {"id", item.ISBN13 } })"
+                                   id="btnComprar-@item.ISBN13"
+                                   class="btn btn-primary btn-sm">
+                                    Comprar...
+                                </a>
+                            </div>
+
+                            <!-- columna para titulos del libro, autores, editorial, pags y precio-->
+                            <div class="col-8">
+                                <p>
+                                    <a asp-controller="Tienda"
+                                       asp-action="MostrarDetallesLibro"
+                                       asp-all-route-data="@(new Dictionary<string, string> { {"id", item.ISBN13 } })">
+                                        @item.Titulo
+                                    </a>
+                                </p>
+                                <p>@item.Autores</p>
+                                <p>@item.Edicion</p>
+                                <p><small class="text-muted">@item.NumeroPaginas paginas</small></p>
+                                <p><strong>@item.Precio €</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col">
+                <p>No se han encontrado libros de esa categoría</p>
+            </div>
+        </div>
+    }
+</div>

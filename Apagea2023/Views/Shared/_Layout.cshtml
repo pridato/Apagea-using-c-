@@ -1,6 +1,13 @@
 ﻿@using System.Text.Json
+@using Apagea2023.Models.Servicios.Interfaces
+
+@inject IDBAccess _servicioBD
+
 @{
-    
+    List<Categoria> _listacats = _servicioBD.RecuperaCategorias("root");
+
+    String _datosCliente = Context.Session.GetString("datoscliente") ?? "";
+    Cliente? clientelogged = ! String.IsNullOrEmpty(_datosCliente) ? JsonSerializer.Deserialize<Cliente>(_datosCliente) : null;
 }
 
 <!DOCTYPE html>
@@ -16,33 +23,51 @@
 <body>
     <header>
         <div class="container">
-            <div class="row">
+            <div class="row" style="background-color: #2c2c2c">
                 <div class="col-9"></div>
                 <div class="col-3">
                     <div class="btn-group btn-sm">
-                        <a href="#" class="btn btn-dark">Contacto</a>
+                        <a href="#" class="btn btn-dark btn-sm"><img src="~/images/botonMINIcontacto.png" /></a>
                         <! -- boton de login siempre y cuando no exista estado de sesion
                               si existe de sesion entonces boton con el mail para acceder al panel del cliente
-                        -->
-                        @if (Context.Session.GetString("datoscliente") != null)
+                        
+                        @if (clientelogged != null)
                          {
-                            Cliente clientelogged = JsonSerializer.Deserialize<Cliente>(Context.Session.GetString("datoscliente"));
                             <a asp-controller="cliente" asp-action="MiPanel" class="btn btn-dark btn-sm">@clientelogged.Credenciales.Email</a>
                         }
                         else
                         {
-                            <a asp-controller="Cliente" asp-action="Login" class="btn btn-dark btn-sm">Login</a>
+                            <a asp-controller="Cliente" asp-action="Login" class="btn btn-dark btn-sm"><img src="~/images/botonMINIlogin.png" /></a>
                         }
-                        <a href="#" class="btn btn-primary">Link</a>
                     </div>
                 </div>
             </div>
         </div>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        <div class="row">
+            <!-- columna para panel principal -->
+            <div class="col-3">
+                <h6>CATEGORIAS</h6>
+                <div class="list-group">
+                    @foreach (Categoria unacat in _listacats)
+                    {
+                        <a asp-controller="Tienda"
+                           asp-action="MostrarLibros"
+                           asp-all-route-data="@(new Dictionary<string, string>{ {"id", unacat.NombreCategoria } } )"
+                           class="list-group-item list-group-item-action">
+
+                            @unacat.NombreCategoria
+
+                        </a>
+                    }
+                </div>
+            </div>
+            <!-- columna central para renderizar vistas de metodos de accion de controladores cargados por modulo enrutamiento -->
+            <div class="col-9">
+                @RenderBody()
+            </div>
+        </div>
     </div>
 
     <footer class="border-top footer text-muted">

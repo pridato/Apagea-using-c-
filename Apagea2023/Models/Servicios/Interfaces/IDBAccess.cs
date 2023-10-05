@@ -20,8 +20,10 @@ namespace Apagea2023.Models.Servicios.Interfaces
 
         #endregion
 
-        #region ... metodos para TiendaController
+        #region ... metodos para TiendaController ...
 
+        public List<Libro>? RecuperarLibros(String idcategoria);
+        public List<Categoria> RecuperaCategorias(String idcategoria);
         #endregion
     }
 }
