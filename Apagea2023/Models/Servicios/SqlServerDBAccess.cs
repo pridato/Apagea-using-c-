@@ -2,6 +2,7 @@
 using BCrypt.Net;
 using Apagea2023.Models.Servicios.Interfaces;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace Apagea2023.Models.Servicios
 {
@@ -176,14 +177,46 @@ namespace Apagea2023.Models.Servicios
 
                     SqlCommand _selectCategorias = new("Select * From dbo.Categorias", _conexionBD);
 
+                    Regex _patronBusquedaCats = idCategorias == "root" ? new Regex("^[0-9]{1,}$") : new Regex("^" + idCategorias + "-.*");
+
+                    #region ... lectura cursor con bucle ...
+                    /*
+                    List<Categoria> _listacats = new();
+
+                    SqlDataReader _resSelect = _selectCategorias.ExecuteReader();
+                    if (_resSelect.HasRows)
+                    {
+                        while (_resSelect.Read())
+                        {
+                            if (_patronBusquedaCats.IsMatch(_resSelect["IdCategoria"].ToString() ?? ""))
+                            {
+                                Categoria _cat = new()
+                                {
+                                    IdCategoria = _resSelect["IdCategoria"].ToString() ?? "",
+                                    NombreCategoria = _resSelect["NombreCategoria"].ToString() ?? ""
+                                };
+                                _listacats.Add(_cat);
+                            } 
+                        }
+                        return _listacats;
+                    } else
+                    {
+                        throw new Exception("... no hay subcategorias de esa categoria... ");
+                    } 
+                }
+                    */
+                    #endregion
+
                     return _selectCategorias.ExecuteReader()
                                             .Cast<IDataRecord>()
                                             .Select((IDataRecord fila) => new Categoria
                                             {
                                                 IdCategoria = fila["IdCategoria"].ToString() ?? "",
-                                                NombreCategoria = fila["NombreCategoria"].ToString() ?? "",
-                                            })
-                                            .ToList<Categoria>();
+                                                NombreCategoria = fila["NombreCategoria"].ToString() ?? ""
+                                            }
+                                                )
+                                                .Where((Categoria cat) => _patronBusquedaCats.IsMatch(cat.IdCategoria))
+                                                .ToList<Categoria>();
                 }
                 catch (Exception)
                 {
@@ -249,14 +282,48 @@ namespace Apagea2023.Models.Servicios
                                  Precio = System.Convert.ToDecimal(fila["Precio"].ToString() ?? ""),
                              })
                              .ToList<Libro>();
-                
+
             }
             catch (Exception)
             {
                 return null;
-            } 
+            }
         }
 
+        public Libro DevuelveLibro(string isbn13)
+        {
+            try
+            {
+                using SqlConnection _conexionBD = new (this.__cadenaConexionServer);
+                _conexionBD.Open();
+
+                SqlCommand _selectLibro = new ("Select * from dbo.Libros where ISBN13=@isbn", _conexionBD);
+                _selectLibro.Parameters.AddWithValue("@isbn", isbn13.ToString());
+
+                return _selectLibro.ExecuteReader()
+                                   .Cast<IDataRecord>()
+                                   .Select((IDataRecord fila) => new Libro
+                                   {
+                                       IdCategoria = fila["IdCategoria"].ToString() ?? "",
+                                       Titulo = fila["Titulo"].ToString() ?? "",
+                                       Autores = fila["Autores"].ToString() ?? "",
+                                       ISBN10 = fila["ISBN10"].ToString() ?? "",
+                                       ISBN13 = fila["ISBN13"].ToString() ?? "",
+                                       Edicion = fila["Edicion"].ToString() ?? "",
+                                       Dimensiones = fila["Dimensiones"].ToString() ?? "",
+                                       ImagenLibroBASE64 = fila["ImagenLibroBASE64"].ToString() ?? "",
+                                       Idioma = fila["Idioma"].ToString() ?? "",
+                                       Resumen = fila["Resumen"].ToString() ?? "",
+                                       NumeroPaginas = System.Convert.ToInt32(fila["NumeroPaginas"].ToString() ?? ""),
+                                       Precio = System.Convert.ToDecimal(fila["Precio"].ToString() ?? ""),
+                                   }
+                                   ).Single<Libro>();
+            } catch (Exception)
+            {
+                return null;
+            }
+            return null;
+        }
         #endregion
         #endregion
     }

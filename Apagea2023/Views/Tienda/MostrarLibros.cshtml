@@ -6,6 +6,8 @@
         <div class="row">
             @foreach (Libro item in Model)
             {
+                <!-- Elemento libro-->
+
                 <div class="col-4">
                     <div class="container">
                         <div class="row">
@@ -16,7 +18,7 @@
                                 <div style="height:157px; height:106px">
                                     <a asp-controller="Tienda"
                                        asp-action="MostrarDetallesLibro"
-                                       asp-all-route-data="@(new Dictionary<string, string> { {"id", item.ISBN13 } })">
+                                       asp-all-route-data="@(new Dictionary<string, string> { { "id", item.ISBN13 }, { "Titulo", item.Titulo }, { "ISBN10", item.ISBN10 } })">
                                         <img class="img-fluid" src="@item.ImagenLibroBASE64" alt="..." />
                                     </a>
                                 </div>
@@ -34,7 +36,7 @@
                                 <p>
                                     <a asp-controller="Tienda"
                                        asp-action="MostrarDetallesLibro"
-                                       asp-all-route-data="@(new Dictionary<string, string> { {"id", item.ISBN13 } })">
+                                       asp-all-route-data="@(new Dictionary<string, string> { { "id", item.ISBN13 }, { "Titulo", item.Titulo }, { "ISBN10", item.ISBN10 } })">
                                         @item.Titulo
                                     </a>
                                 </p>
@@ -46,6 +48,7 @@
                         </div>
                     </div>
                 </div>
+
             }
         </div>
     }

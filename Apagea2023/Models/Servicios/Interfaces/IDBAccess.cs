@@ -24,6 +24,7 @@ namespace Apagea2023.Models.Servicios.Interfaces
 
         public List<Libro>? RecuperarLibros(String idcategoria);
         public List<Categoria> RecuperaCategorias(String idcategoria);
+        public Libro DevuelveLibro(string id);
         #endregion
     }
 }

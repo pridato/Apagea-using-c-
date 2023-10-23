@@ -161,8 +161,8 @@ namespace Apagea2023.Controllers
                 {
                     //3º si ok, CREO VARIABLE DE ESTADO con los datos del objeto cliente logueado (pedidos, direcciones, opiniones,...)
                     HttpContext.Session.SetString("datoscliente", JsonSerializer.Serialize<Cliente>(_datosCliente));
-                    
-                    return RedirectToAction("Libros", "Tienda");
+                    HttpContext.Session.SetString("pedidoactual", JsonSerializer.Serialize<Pedido>)(new Pedido());
+                    return RedirectToAction("MostrarLibros", "Tienda");
 
                 }
             }

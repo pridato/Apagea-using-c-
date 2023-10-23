@@ -40,6 +40,16 @@ namespace Apagea2023.Controllers
 
             return View(_listaLibrosCat);
         }
+
+        [HttpGet]
+        public IActionResult MostrarDetallesLibro(String id,
+                                                  [FromQuery] String titulo,
+                                                  [FromQuery] String ISBN10)
+        {
+            Libro _libroAPintar = this.__servicioBD.DevuelveLibro(id);
+            return View(_libroAPintar);
+        }
+
         #endregion
 
         #region ............. METODOS privados ..........
