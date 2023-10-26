@@ -2,8 +2,6 @@
 using Apagea2023.Models.Servicios.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Runtime.CompilerServices;
-
 using System.Text.Json;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -161,7 +159,7 @@ namespace Apagea2023.Controllers
                 {
                     //3º si ok, CREO VARIABLE DE ESTADO con los datos del objeto cliente logueado (pedidos, direcciones, opiniones,...)
                     HttpContext.Session.SetString("datoscliente", JsonSerializer.Serialize<Cliente>(_datosCliente));
-                    HttpContext.Session.SetString("pedidoactual", JsonSerializer.Serialize<Pedido>)(new Pedido());
+                    HttpContext.Session.SetString("pedidoactual", JsonSerializer.Serialize<Pedido>(new Pedido()));
                     return RedirectToAction("MostrarLibros", "Tienda");
 
                 }

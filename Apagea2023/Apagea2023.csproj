@@ -15,11 +15,13 @@
     <None Remove="Models\Servicios\" />
     <None Remove="Models\Servicios\Interfaces\" />
     <None Remove="Views\Tienda\" />
+    <None Remove="Views\Pedido\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Servicios\" />
     <Folder Include="Models\Servicios\Interfaces\" />
     <Folder Include="Views\Tienda\" />
+    <Folder Include="Views\Pedido\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="json\categorias.json" />

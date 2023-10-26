@@ -15,8 +15,9 @@ namespace Apagea2023.Models
         public Direccion DireccionFacturacion { get; set; }
 
         public Decimal Subtotal { get; set; } = 0;
-        public Decimal GastosEnvio { get; set; } = 0;
+        public Decimal GastosEnvio { get; set; } = 2;
         public Decimal Total { get; set; } = 0;
+        public String EstadoPedido { get; set; } = "en preparacion";
 
         #endregion
 
